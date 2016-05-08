@@ -1,23 +1,43 @@
-$.ajax({
-  url: 'js/previsao.xml',
-  method: 'get',
-  contentType: 'text/xml',
-  success: function(data){
-    console.log(data);
-    listData(data);
-  }
-});
-
-function listData(data){
-  var xml = data;
-  var item = $(xml).find('previsao');
-
-  $(item).each(function(){
-    $('body').append( $(this).find('dia').text() + '<br/>' );
-    $('body').append( $(this).find('tempo').text() + '<br/>' );
-    $('body').append( $(this).find('maxima').text() + '<br/>' );
-    $('body').append( $(this).find('minima').text() + '<br/>' );
-    $('body').append( $(this).find('iuv').text() + '<br/>' );
+function initApp(){
+  $('#city').on('submit', function(){
+    var cityName = $('#city').serialize();
+    var url = $(this).attr('action');
+    getCity(url, cityName);
+    return false;
   });
-  console.log(item);
+
+
+  function getCity(url, cityName){
+    console.log('getting city...');
+    $.post({
+      url: url,
+      method: 'post',
+      dataType: 'json',
+      data: cityName,
+      success: listCity
+    });
+
+    function listCity(data){
+      console.log(data);
+      var city = data['cidade'];
+      
+      //creating a array for a single item
+      if( !Array.isArray(city) ){
+        city = [data['cidade']];
+      }
+
+      $('#box-city').html('');
+      for(var i = 0; i < city.length; i++){
+        $('#box-city').append('<div><p>' + city[i].nome +' - '+ city[i].uf +'</p></div>');
+      }
+    }
+  }
+
 }
+
+
+$(document).ready(initApp);
+
+
+
+
