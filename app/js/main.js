@@ -3,12 +3,12 @@ function initApp(){
   var divWeather = $('#weather');
 
   $('#city').on('submit', function(){
-    var cityName = $('#city').serialize();
+    var cityName =  $('#city').serialize();
+    console.log(cityName);
     var url = $(this).attr('action');
     getCity(url, cityName);
     return false;
   });
-
 
   function getCity(url, cityName){
     console.log('getting city...');
@@ -75,9 +75,14 @@ function initApp(){
 
         $(divWeather).find('ul').html('');
         $('#city_picked').text(data.nome);
+        
 
         for(var i = 0; i < prevision.length; i++){
-          $(divWeather).find('ul').append('<li class="list-group-item text-left">Dia: ' + prevision[i].dia + '<div class="badge"><span class="label label-primary">mínima: '+prevision[i].minima+'</span>' + '<span class="label label-danger"> máxima: '+prevision[i].maxima+'</span></div></li>');
+          var dayString = prevision[i].dia;
+          var date = dayString.replace(/-/g, ',');
+          var datePrevision = new Date(date);
+
+          $(divWeather).find('ul').append('<li class="list-group-item text-left">Dia: ' + datePrevision.getDate() +'/'+ datePrevision.getMonth() + '<div class="badge"><span class="label label-primary">mínima: '+prevision[i].minima+'</span>' + '<span class="label label-danger"> máxima: '+prevision[i].maxima+'</span></div></li>');
         }
       }
 
